@@ -208,13 +208,11 @@ A：不会。`components.md` 里定义了排列规则——头条固定占两列
 
 ## 🙏 致谢
 
-要特别说清楚——这个项目能存在，完全是因为站在了 **[张咋啦（Zara Zhang）@zarazhangrui](https://github.com/zarazhangrui)** 的肩膀上。
+这个项目能存在，完全是站在了 **[张咋啦（Zara Zhang）@zarazhangrui](https://github.com/zarazhangrui)** 的肩膀上。
 
-是她提出了 **「Follow Builders, Not Influencers」**——与其追着网红看二手解读，不如直接追踪一线建造者的一手信息。更难得的是，她没有把这套方法论停留在口号，而是亲手做成了 [follow-builders](https://github.com/zarazhangrui/follow-builders) 这个开源 skill：自己搭服务器、扛 API 成本、每天抓取整理，再**免费**开放给所有人，让任何一个普通人装上就能用，连一个 API Key 都不用配。
+她提出「Follow Builders, Not Influencers」的理念——与其在二手的网红信息里淘金，不如直接看一线建造者在做什么。她自己搭服务器、独自承担 API 费用、默默做好所有的每日抓取，把这个极其好用的 skill 免费送给所有人，甚至贴心地省去了配置 Key 的门槛，让我们零门槛（甚至不用配 Key）开箱即用。
 
-**所有的数据、所有的信息源、所有的内容摘要逻辑，都是她的工作。** 我做的只是在她搭好的引擎之上，加了一层「报纸排版」——把她输出的文字摆得好看一点而已。引擎是她造的，我只是换了个好看的车壳。
-
-所以如果你喜欢这份日报，请**先去给 [原版仓库](https://github.com/zarazhangrui/follow-builders) 点一颗 ⭐️**——那才是真正的源头。谢谢 Zara，谢谢你把这么好的东西开源出来。🙏
+底层的数据流、信息源聚合、摘要逻辑，100% 都是 Zara 的成果。我做的，仅仅是在她搭好的工业引擎之上，做了一层「报纸排版」的视觉优化，把她输出的优质内容摆放得更美观、更易读一些。如果这份日报对你有价值，请把第一颗 ⭐️ 送给 **[原版仓库](https://github.com/zarazhangrui/follow-builders)**，那是真正的源头。谢谢 Zara，致敬真正的 Builder。
 
 ---
 
