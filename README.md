@@ -1,3 +1,7 @@
+<p align="right">
+  <b>中文</b> · <a href="README.en.md">English</a>
+</p>
+
 # Follow Builders Daily 📰
 
 > 把 [Follow Builders](https://github.com/zarazhangrui/follow-builders) 的纯文字摘要，变成一份**报纸风格的 HTML 日报**。
