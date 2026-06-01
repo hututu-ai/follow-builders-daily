@@ -156,12 +156,6 @@ echo "✅ 两个 skill 都装好了！"
 | **Builder 卡片网格** | 头条占两列，其余分栏，重要的物理上就更大 |
 | **播客深度专题** | 1 小时播客压缩成 3 分钟，首字下沉 + 五大要点 |
 
-报头 & 卡片实拍：
-
-![报头](assets/preview-masthead.png)
-![Builder 卡片](assets/preview-cards.png)
-![播客专题](assets/preview-podcast.png)
-
 ---
 
 ## 🗂 文件结构（想自己改的人看）
@@ -200,15 +194,23 @@ A：不会。`components.md` 里定义了排列规则——头条固定占两列
 
 ---
 
+## 🌱 这东西是怎么来的
+
+一开始，其实只是**给我自己用的**。
+
+我每天都想刷一刷一线 AI builder 的动态，但原版输出的纯文字看着有点累，就顺手给自己排了个报纸版面，每天打开看着舒服。后来我把这份日报发到社交媒体上，没想到很多朋友都很喜欢，纷纷问能不能也用上。
+
+应大家的要求，我把它整理出来，开源到了 GitHub。希望它也能让你每天的 AI 资讯，读起来更有意思一点。
+
 ## 🙏 致谢
 
-这个项目能存在，完全是因为站在了 **[张咋啦（Zara Zhang）@zarazhangrui](https://github.com/zarazhangrui)** 的肩膀上。
+要特别说清楚——这个项目能存在，完全是因为站在了 **[张咋啦（Zara Zhang）@zarazhangrui](https://github.com/zarazhangrui)** 的肩膀上。
 
 是她提出了 **「Follow Builders, Not Influencers」**——与其追着网红看二手解读，不如直接追踪一线建造者的一手信息。更难得的是，她没有把这套方法论停留在口号，而是亲手做成了 [follow-builders](https://github.com/zarazhangrui/follow-builders) 这个开源 skill：自己搭服务器、扛 API 成本、每天抓取整理，再**免费**开放给所有人，让任何一个普通人装上就能用，连一个 API Key 都不用配。
 
 **所有的数据、所有的信息源、所有的内容摘要逻辑，都是她的工作。** 我做的只是在她搭好的引擎之上，加了一层「报纸排版」——把她输出的文字摆得好看一点而已。引擎是她造的，我只是换了个好看的车壳。
 
-如果你喜欢这份日报，请先去给 **[原版仓库](https://github.com/zarazhangrui/follow-builders)** 点一颗 ⭐️——那才是真正的源头。谢谢 Zara，谢谢你把这么好的东西开源出来。🙏
+所以如果你喜欢这份日报，请**先去给 [原版仓库](https://github.com/zarazhangrui/follow-builders) 点一颗 ⭐️**——那才是真正的源头。谢谢 Zara，谢谢你把这么好的东西开源出来。🙏
 
 ---
 
