@@ -2,194 +2,216 @@
 
 > 把 [Follow Builders](https://github.com/zarazhangrui/follow-builders) 的纯文字摘要，变成一份**报纸风格的 HTML 日报**。
 
-每天一份，像看报纸一样刷硅谷 AI 资讯——报头、头版头条、30 秒速览、Builder 分栏卡片、播客深度专题，浏览器直接打开，可阅读、可截图、可分享。
+每天一份，像看报纸一样刷硅谷 AI 资讯——报头、头版头条、30 秒速览、Builder 分栏卡片、播客深度专题，浏览器直接打开，可阅读、可截图、可分享到小红书 / 朋友圈。
 
 ![日报预览](assets/preview-full.png)
 
 ---
 
-## ⚠️ 重要：这是一个「增强插件」，需要安装两个 Skill
+## 💡 先用一句话理解它
 
-这个 Skill **不能单独工作**。它是原版 Follow Builders 的**输出增强层**——
+> **原版 Follow Builders 给你「一段文字」，这个插件把它变成「一张报纸」。**
 
-| | 负责什么 | 谁提供 |
+它本身不抓数据、不写摘要，只做一件事——**把原版输出的内容，排成一份好看的报纸 HTML**。
+
+所以它必须和原版搭配使用。下面会手把手教你怎么装，**完全没装过 skill 也能跟着做**。
+
+---
+
+## ⚠️ 最重要的一件事：你需要安装「两个」Skill
+
+| | 它负责什么 | 来自谁 |
 |---|---|---|
-| **原版 follow-builders** | 抓取数据 + 文字摘要 | [@zarazhangrui](https://github.com/zarazhangrui/follow-builders) |
-| **follow-builders-daily（本仓库）** | 把文字排成报纸 HTML | 你正在看的这个 |
+| **① 原版 follow-builders** | 抓数据 + 写文字摘要（核心引擎） | [@zarazhangrui](https://github.com/zarazhangrui/follow-builders) |
+| **② follow-builders-daily（本仓库）** | 把文字排成报纸 HTML（外观皮肤） | 本仓库 |
 
-打个比方：
+- 只装 **①** → 你得到一段**纯文字**摘要 📝
+- 只装 **②** → ❌ **跑不起来**，因为没有数据来源
+- **① + ② 都装** → 你得到一份**报纸 HTML** 📰 ✅
 
-- 只装**原版** → 你每天得到一段**纯文字摘要**（发到 Telegram / 终端）
-- 只装**本 Skill** → ❌ 没有数据源，跑不起来
-- **两个都装** → 你每天得到一份**排版精美的报纸 HTML** ✅
-
-> 简单说：原版是「食材 + 切配」，本 Skill 是「摆盘」。没有食材，光有摆盘的盘子是空的。
+> 打个比方：**原版是做菜的厨房（食材+烹饪），本插件是摆盘的盘子。** 没有厨房，光有盘子端不出菜。
 
 ---
 
-## 🔄 它是怎么运转的
+## 🧩 它到底是怎么运转的
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  原版 follow-builders skill                                   │
-│                                                               │
-│  ① prepare-digest.js                                          │
-│     从中心化 feed 拉取数据（一次 HTTP 请求，无需 API Key）     │
-│         ↓                                                     │
-│     JSON { x: [...推文], podcasts: [...], prompts: {...} }    │
-└─────────────────────────────────────────────────────────────┘
-                          ↓
-┌─────────────────────────────────────────────────────────────┐
-│  follow-builders-daily skill（本仓库）                        │
-│                                                               │
-│  ② 内容 Remix                                                 │
-│     用原版的 prompts 把推文/播客摘要成中文                     │
-│         ↓                                                     │
-│  ③ 选题决策                                                   │
-│     选头条 · 挑 30 秒速览 · 选每日金句 · 提取标签             │
-│         ↓                                                     │
-│  ④ 组装 HTML                                                  │
-│     按 templates/base.html 骨架 + components.md 组件手册       │
-│     把内容填进报纸版面（头条用 span-2，其余分栏排列）          │
-│         ↓                                                     │
-│  ⑤ 输出 + 打开                                                │
-│     写入 HTML 文件 → 浏览器自动打开                            │
-└─────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────┐
+│  ① 原版 follow-builders（厨房）                                │
+│                                                                │
+│   prepare-digest.js 脚本                                       │
+│   └─ 从中心化 feed 拉取今日数据（一次 HTTP 请求，无需 API Key） │
+│        ↓                                                       │
+│      JSON 数据 { 推文[], 播客[], 摘要指令{} }                  │
+└──────────────────────────────────────────────────────────────┘
+                          ↓  把数据交给插件
+┌──────────────────────────────────────────────────────────────┐
+│  ② follow-builders-daily（摆盘）                               │
+│                                                                │
+│   1. 用原版的指令把推文/播客摘要成中文                          │
+│   2. 选出头条、30 秒速览、每日金句、话题标签                    │
+│   3. 按报纸模板组装 HTML（头条占两列，其余分栏排列）            │
+│   4. 写入文件 → 浏览器自动打开                                  │
+└──────────────────────────────────────────────────────────────┘
 ```
 
-**关键点：数据和摘要逻辑全部来自原版，本 Skill 只负责「最后一公里的排版」。**
-这样设计的好处是——Zara 在中心化 feed 里更新 builder 列表 / 数据源时，你**自动跟上**，不用手动同步。
+**为什么要这样拆成两个、而不是合并成一个？**
+因为原版的 builder 名单、数据源是张咋啦在云端**持续更新**的。本插件依赖原版，就能**自动用上最新的数据源**，永远不会过时。本插件只专心做好「排版」这一件事。
 
 ---
 
-## 📦 安装
+## 📦 安装教程（手把手，零基础可跟）
 
-### 第 1 步：安装原版 follow-builders（必须）
+> **前提**：你已经在电脑上装好了 [Claude Code](https://docs.claude.com/claude-code)。
+> Skill 都放在 `~/.claude/skills/` 这个文件夹里，每个 skill 是一个子文件夹。
+
+### 第 1 步：装原版 follow-builders（数据引擎，必装）
+
+打开终端（Terminal），复制粘贴运行：
 
 ```bash
 git clone https://github.com/zarazhangrui/follow-builders.git ~/.claude/skills/follow-builders
 cd ~/.claude/skills/follow-builders/scripts && npm install
 ```
 
-首次使用先在 Claude Code 里完成原版的引导设置（语言、推送方式等）：
+> 这一步会下载原版 skill，并安装它需要的依赖。`npm install` 跑完没报红色 error 就算成功。
+
+### 第 2 步：装本插件 follow-builders-daily（报纸皮肤）
+
+```bash
+git clone https://github.com/hututu-ai/follow-builders-daily.git ~/.claude/skills/follow-builders-daily
+```
+
+> 本插件**不需要** `npm install`，没有任何额外依赖，下载完就好。
+
+### 第 3 步：检查两个都装好了
+
+```bash
+ls ~/.claude/skills/follow-builders/scripts/prepare-digest.js && \
+ls ~/.claude/skills/follow-builders-daily/SKILL.md && \
+echo "✅ 两个 skill 都装好了！"
+```
+
+看到 `✅ 两个 skill 都装好了！` 就成功了。
+
+### 第 4 步：初始化原版（只需做一次）
+
+打开 Claude Code，在对话框里输入：
 
 ```
 初始化 follow builders
 ```
 
-> 选「中文」语言，推送方式选「在终端显示 / stdout」即可（本 Skill 会接管输出）。
+它会用对话的方式问你几个问题，**这样选就行**：
 
-### 第 2 步：安装本 Skill（follow-builders-daily）
+| 它问什么 | 你怎么选 |
+|---|---|
+| 推送频率 | 每日（daily） |
+| 语言 | **中文**（zh） |
+| 推送方式 | **在终端显示 / stdout**（让插件接管输出） |
 
-```bash
-git clone https://github.com/<你的用户名>/follow-builders-daily.git ~/.claude/skills/follow-builders-daily
-```
+> 不用编辑任何配置文件，跟着对话点选即可。设置完它可能会先发一份纯文字摘要给你——这是正常的，说明原版引擎通了。
 
-无需 `npm install`，本 Skill 没有额外依赖。
+### 第 5 步：生成你的第一份报纸 🎉
 
-### 第 3 步：验证两个都装好了
-
-```bash
-ls ~/.claude/skills/follow-builders/scripts/prepare-digest.js   # 原版（数据源）
-ls ~/.claude/skills/follow-builders-daily/SKILL.md              # 本 Skill（排版）
-```
-
-两个文件都存在 = 安装完成。
-
----
-
-## 🚀 使用
-
-在 Claude Code 中，任意目录下说：
+还是在 Claude Code 对话框里，输入：
 
 ```
 生成日报
 ```
 
-也可以说：「今日日报」「来份报纸」「daily」「newspaper」。
+等一两分钟，它会自动拉数据、排版、然后**在浏览器里弹出一份报纸**。
 
-Claude 会自动：
-1. 调用原版脚本拉取今日数据
-2. Remix 内容为中文
-3. 组装报纸 HTML
-4. 在浏览器中打开
-
-输出文件默认在：
+生成的文件在这里：
 
 ```
 ~/cola/outputs/follow-builders-daily/
 ├── index.html        ← 最新一期（每次覆盖）
-└── 2026-06-01.html   ← 按日期归档
+└── 2026-06-01.html   ← 按日期归档，不会丢
 ```
 
 ---
 
-## 📄 日报包含什么
+## 🚀 之后每天怎么用
 
-| 版块 | 内容 | 截图 |
-|------|------|------|
-| **报头 Masthead** | 刊名、期号、日期、天气、版次 | ![](assets/preview-masthead.png) |
-| **头版头条** | 今天最重要的事，lime 绿横幅 | — |
-| **30 秒速览** | 3 条一句话核心信息 | — |
-| **每日金句** | 从推文里挑的最佳引用 | — |
-| **主编按语 + 标签** | 串联叙述 + 话题标签 | — |
-| **Builder 卡片网格** | 头条占两列，其余分栏 | ![](assets/preview-cards.png) |
-| **播客深度专题** | 1 小时播客压缩成 3 分钟，首字下沉 + 五大要点 | ![](assets/preview-podcast.png) |
+装好之后，以后只要在 Claude Code 里说一句就行：
+
+```
+生成日报
+```
+
+也认这些说法：「今日日报」「来份报纸」「daily」「newspaper」。
 
 ---
 
-## 🗂 文件结构
+## 📄 一份日报长什么样
+
+| 版块 | 内容 |
+|------|------|
+| **报头 Masthead** | 刊名、期号、日期、天气、版次 |
+| **头版头条** | 今天最重要的事，lime 绿横幅，5 秒抓住重点 |
+| **30 秒速览** | 3 条一句话核心信息，没空细读就扫这三行 |
+| **每日金句** | 从推文里挑的最精彩一句，黑底白字 |
+| **主编按语 + 标签** | 串联今天的主题 + 话题标签 |
+| **Builder 卡片网格** | 头条占两列，其余分栏，重要的物理上就更大 |
+| **播客深度专题** | 1 小时播客压缩成 3 分钟，首字下沉 + 五大要点 |
+
+报头 & 卡片实拍：
+
+![报头](assets/preview-masthead.png)
+![Builder 卡片](assets/preview-cards.png)
+![播客专题](assets/preview-podcast.png)
+
+---
+
+## 🗂 文件结构（想自己改的人看）
 
 ```
 follow-builders-daily/
-├── SKILL.md                 # Skill 定义 + 完整工作流程（Claude 读这个）
+├── SKILL.md                 # Claude 的操作手册：从拿数据到出 HTML 的完整步骤
 ├── templates/
-│   ├── base.html             # HTML + CSS 模板（带 {{占位符}} 的报纸骨架）
-│   └── components.md         # 组件手册：8 种 HTML 模式 + 网格排列规则
+│   ├── base.html             # 报纸的「空白模板」：全部 CSS + 版面骨架 + {{占位符}}
+│   └── components.md         # 「积木说明书」：每种卡片的 HTML 长什么样、何时用
 ├── examples/
-│   └── 2026-05-12.html       # 一份完整的日报示例
+│   └── 2026-05-12.html       # 一份完整的日报示例，打开就能看效果
 ├── assets/                   # README 用的预览截图
 └── README.md
 ```
 
-### 三个核心文件的分工
-
-- **`SKILL.md`** —— Claude 的「操作手册」。定义了从拿数据到出 HTML 的 6 个步骤。
-- **`templates/base.html`** —— 报纸的「空白模板」。包含全部 CSS 样式和版面骨架，动态内容处用 `{{LEAD_HEADLINE}}` 这样的占位符标记。
-- **`templates/components.md`** —— 报纸的「积木说明书」。告诉 Claude 每种卡片（头条版 / 普通版 / 小稿版 / 播客专题）的 HTML 长什么样、什么时候用哪种。
+**想改设计？**
+- 改颜色 / 字体 → 编辑 `templates/base.html` 里 `:root` 的 CSS 变量（`--lime`、`--black` 等）
+- 改版面结构 → 编辑 `templates/components.md` 里的组件 HTML
 
 ---
 
-## 🎨 设计语言
+## ❓ 常见问题
 
-- **Neo-Brutalism**：黑色粗边框（2px）+ 硬阴影（`4px 4px 0 #000`）+ lime 绿强调色（`#b8e05a`）
-- **报纸排版**：CSS Grid 分栏，头条 `span-2` 占两列，重要的内容物理上就更大
-- **信息层次**：大标题 > 小稿 > 摘要框，扫一眼就知道今天什么最重要
-- **中文友好**：Google Fonts 的 Noto Sans SC，无需本地字体
+**Q：我能不能只装你这一个，不装原版？**
+A：不能。本插件没有数据来源，必须靠原版抓数据。这也是故意的设计——原版的数据源由张咋啦在云端维护更新，依赖它你就能一直用上最新名单，不用自己折腾。
 
----
+**Q：为什么 `生成日报` 没反应 / 报错说找不到脚本？**
+A：多半是原版没装好。回到「第 3 步」跑一遍检查命令，确认 `prepare-digest.js` 存在。
 
-## ❓ FAQ
+**Q：日报能像原版一样自动推送到 Telegram 吗？**
+A：HTML 没法在 Telegram 里直接显示。目前是「本地生成 + 浏览器打开」。如果你配了原版的 Telegram，本插件可以额外发一条文字提醒你「今天的报纸生成好了，去浏览器看」。
 
-**Q：为什么不把原版打包进来，让用户只装一个？**
-A：因为 builder 列表和数据源是 Zara 中心化维护的，会持续更新。依赖原版能自动跟上最新数据源；自己 fork 一份很快就过时了。本 Skill 只贡献排版价值，不重复造数据轮子。
-
-**Q：日报能自动每天推送吗？**
-A：HTML 文件无法在 Telegram 里直接渲染。当前是「本地生成 + 浏览器打开」模式。如果配了原版的 Telegram/Email，本 Skill 可以额外发一条文字通知提醒你去看。
-
-**Q：能改设计风格 / 颜色吗？**
-A：可以。编辑 `templates/base.html` 里的 `:root` CSS 变量（`--lime`、`--black` 等），或调整 `components.md` 里的组件结构。
-
-**Q：每天的 builder 数量不一样，版面会乱吗？**
-A：不会。`components.md` 定义了网格排列规则——头条固定 span-2，其余每 3 个一行，最后一行不足 3 个就留白。Claude 会按规则自适应排列。
+**Q：每天 builder 数量不一样，版面会不会乱？**
+A：不会。`components.md` 里定义了排列规则——头条固定占两列，其余每 3 个一行，最后一行不满就留白，Claude 会自动适配。
 
 ---
 
 ## 🙏 致谢
 
-- **理念和数据源**：[张咋啦 @zarazhangrui](https://github.com/zarazhangrui/follow-builders) ——「Follow Builders, Not Influencers」
-- **报纸排版设计**：本仓库作者
+这个项目能存在，完全是因为站在了 **[张咋啦（Zara Zhang）@zarazhangrui](https://github.com/zarazhangrui)** 的肩膀上。
+
+是她提出了 **「Follow Builders, Not Influencers」**——与其追着网红看二手解读，不如直接追踪一线建造者的一手信息。更难得的是，她没有把这套方法论停留在口号，而是亲手做成了 [follow-builders](https://github.com/zarazhangrui/follow-builders) 这个开源 skill：自己搭服务器、扛 API 成本、每天抓取整理，再**免费**开放给所有人，让任何一个普通人装上就能用，连一个 API Key 都不用配。
+
+**所有的数据、所有的信息源、所有的内容摘要逻辑，都是她的工作。** 我做的只是在她搭好的引擎之上，加了一层「报纸排版」——把她输出的文字摆得好看一点而已。引擎是她造的，我只是换了个好看的车壳。
+
+如果你喜欢这份日报，请先去给 **[原版仓库](https://github.com/zarazhangrui/follow-builders)** 点一颗 ⭐️——那才是真正的源头。谢谢 Zara，谢谢你把这么好的东西开源出来。🙏
+
+---
 
 ## License
 
-MIT
+MIT —— 和原版保持一致，自由使用、修改、分发。
