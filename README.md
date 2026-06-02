@@ -184,14 +184,20 @@ echo "✅ 两个 skill 都装好了！"
 
 ## 🆕 更新日志
 
-这个项目会长期维护、持续更新。每次新增功能都会记录在这里 👇
+这个项目会长期维护、持续更新。每次新增了什么，都直接写在这里 👇
 
-| 版本 | 日期 | 更新内容 |
-|------|------|---------|
-| **v1.1.0** | 2026-06-02 | 📬 **邮件订阅**——把报纸 HTML 直接发到你的邮箱 |
-| **v1.0.0** | 2026-06-01 | 🎉 **首次发布**——报纸风格 HTML 日报（报头 / 头版 / 30 秒速览 / 金句 / Builder 卡片 / 播客专题） |
+### v1.1.0 · 2026-06-02 ｜ 📬 邮件订阅
+- 现在可以把生成的报纸**直接发到你的邮箱**——邮件客户端能渲染 HTML，收件箱里就是一份排版完整的报纸。
+- **用法**：在 Claude Code 说「把投递方式改成邮件」，配好免费的 [Resend](https://resend.com) key + 收件邮箱；之后说「生成日报并发到邮箱」即可。
+- 新增零依赖脚本 `scripts/send-email.mjs`，复用原版 follow-builders 已有的邮箱配置（`RESEND_API_KEY` + `delivery.email`），无需重复设置。
 
-> 完整记录见 [CHANGELOG.md](CHANGELOG.md)｜每个版本的发布说明见 [Releases](https://github.com/hututu-ai/follow-builders-daily/releases)。
+### v1.0.0 · 2026-06-01 ｜ 🎉 首次发布
+- 把 Follow Builders 的纯文字摘要，变成一份**报纸风格的 HTML 日报**。
+- 包含版块：报头 · 头版头条 · 30 秒速览 · 每日金句 · 主编按语 + 标签 · Builder 分栏卡片 · 播客深度专题。
+- 零依赖，字体用 Google Fonts（不依赖本地字体），跨设备可移植。
+- 完整中英双语 README + 零基础手把手安装教程。
+
+> 想下载某个历史版本的源码？去 [Releases](https://github.com/hututu-ai/follow-builders-daily/releases) 页面。
 
 ---
 

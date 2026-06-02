@@ -186,14 +186,20 @@ True "scheduled daily delivery" needs a timer that wakes up the generation. Beca
 
 ## 🆕 Changelog
 
-This project is maintained long-term and keeps getting updates. Every new feature is logged here 👇
+This project is maintained long-term and keeps getting updates. Whatever's new is written right here 👇
 
-| Version | Date | What's new |
-|---------|------|-----------|
-| **v1.1.0** | 2026-06-02 | 📬 **Email subscription** — get the newspaper HTML straight to your inbox |
-| **v1.0.0** | 2026-06-01 | 🎉 **Initial release** — newspaper-style HTML daily (masthead / headline / 30s brief / quote / builder cards / podcast feature) |
+### v1.1.0 · 2026-06-02 ｜ 📬 Email subscription
+- You can now **email the generated newspaper straight to your inbox** — email clients render HTML, so your inbox shows a fully laid-out newspaper.
+- **How**: in Claude Code say "switch delivery to email", set up a free [Resend](https://resend.com) key + recipient address; then say "generate daily and email it".
+- Added the zero-dependency `scripts/send-email.mjs`, reusing the original follow-builders email config (`RESEND_API_KEY` + `delivery.email`) — no duplicate setup.
 
-> Full log in [CHANGELOG.md](CHANGELOG.md) · per-version notes in [Releases](https://github.com/hututu-ai/follow-builders-daily/releases).
+### v1.0.0 · 2026-06-01 ｜ 🎉 Initial release
+- Turns the Follow Builders plain-text digest into a **newspaper-style HTML daily**.
+- Sections: masthead · front-page headline · 30-second brief · quote of the day · editor's note + tags · columned builder cards · in-depth podcast feature.
+- Zero dependencies; uses Google Fonts (no local font dependency); portable across machines.
+- Full bilingual README + beginner-friendly install guide.
+
+> Want the source of an older version? Head to [Releases](https://github.com/hututu-ai/follow-builders-daily/releases).
 
 ---
 
