@@ -184,6 +184,19 @@ True "scheduled daily delivery" needs a timer that wakes up the generation. Beca
 
 ---
 
+## 🆕 Changelog
+
+This project is maintained long-term and keeps getting updates. Every new feature is logged here 👇
+
+| Version | Date | What's new |
+|---------|------|-----------|
+| **v1.1.0** | 2026-06-02 | 📬 **Email subscription** — get the newspaper HTML straight to your inbox |
+| **v1.0.0** | 2026-06-01 | 🎉 **Initial release** — newspaper-style HTML daily (masthead / headline / 30s brief / quote / builder cards / podcast feature) |
+
+> Full log in [CHANGELOG.md](CHANGELOG.md) · per-version notes in [Releases](https://github.com/hututu-ai/follow-builders-daily/releases).
+
+---
+
 ## 🗂 Project structure (for those who want to tweak it)
 
 ```
