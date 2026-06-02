@@ -188,6 +188,14 @@ True "scheduled daily delivery" needs a timer that wakes up the generation. Beca
 
 This project is maintained long-term and keeps getting updates. Whatever's new is written right here 👇
 
+### v1.2.0 · 2026-06-02 ｜ 🧭 Navbar interactions
+- The newspaper's top nav bar goes from "decoration" to a **working navigation**:
+  - **Smooth scroll**: click a nav item to glide to that section.
+  - **Sticky**: the nav bar sticks to the top as you scroll, always clickable.
+  - **Scroll-spy highlight**: the current section's nav item and header bar light up lime as you scroll (IntersectionObserver).
+- The nav only shows **sections that actually exist** (X / Twitter, Podcast) — no empty filler.
+- Thanks to community contributor [@1480735780](https://github.com/hututu-ai/follow-builders-daily/issues/1) for the complete proposal 🙏
+
 ### v1.1.0 · 2026-06-02 ｜ 📬 Email subscription
 - You can now **email the generated newspaper straight to your inbox** — email clients render HTML, so your inbox shows a fully laid-out newspaper.
 - **How**: in Claude Code say "switch delivery to email", set up a free [Resend](https://resend.com) key + recipient address; then say "generate daily and email it".

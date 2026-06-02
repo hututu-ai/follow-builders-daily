@@ -118,7 +118,7 @@
       --ff-title: 'Noto Sans SC', 'Inter', 'Helvetica Neue', Arial, sans-serif;
     }
 
-    html { background: #e8e8e8; }
+    html { background: #e8e8e8; scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
@@ -210,15 +210,29 @@
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
+      position: sticky;       /* 吸顶：滚动时黏在顶部 */
+      top: 0;
+      z-index: 100;
     }
+    .mast-nav a,
     .mast-nav span {
       padding: 7px 18px;
       border-right: 1px solid #444;
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.25s, color 0.25s, box-shadow 0.25s;
     }
+    .mast-nav a:last-child,
     .mast-nav span:last-child { border-right: none; }
+    .mast-nav a:hover { background: #2a2a2a; }
+    .mast-nav a.active,
     .mast-nav span.active {
       background: var(--lime);
       color: var(--black);
+      font-weight: 900;
+      box-shadow: inset 0 -3px 0 var(--black);   /* 高亮项底部加黑条，呼应粗野风 */
     }
 
     /* ══ LEAD BANNER ══ */
@@ -278,6 +292,12 @@
       border-top: 3px solid var(--black);
       border-bottom: 2px solid var(--black);
       padding: 6px 0;
+      scroll-margin-top: 48px;   /* 吸顶导航栏的高度，跳转时不被遮住 */
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .sec-bar.highlight {
+      border-top-color: var(--lime);
+      box-shadow: 0 -3px 0 var(--lime);   /* 当前阅读的板块，标题栏顶部亮绿 */
     }
     .sec-tag {
       background: var(--black);
@@ -749,7 +769,7 @@
       深度摘要 · 全文
     </div>
   </div>
-  <nav class="mast-nav">
+  <nav class="mast-nav" id="main-nav">
     {{NAV_ITEMS}}
   </nav>
 </header>
@@ -796,7 +816,7 @@
   </div>
 
   <!-- ══ SECTION: X 动态 ══ -->
-  <div class="sec-bar">
+  <div class="sec-bar" id="sec-x">
     <span class="sec-tag">X / Twitter</span>
     <span class="sec-title">Builder 动态</span>
     <span class="sec-count">今日 {{BUILDER_COUNT}} 位 builder · {{TWEET_COUNT}} 条推文</span>
@@ -817,6 +837,50 @@
     Generated {{DATE_SHORT}} &nbsp;·&nbsp; Vol. I No. {{VOL_NUM}} &nbsp;·&nbsp; via follow-builders-daily skill
   </div>
 </footer>
+
+<!-- ══ 导航栏交互：平滑滚动 + 滚动高亮（IntersectionObserver） ══ -->
+<script>
+(function () {
+  var nav = document.getElementById('main-nav');
+  if (!nav) return;
+  var links = Array.prototype.slice.call(nav.querySelectorAll('a[data-section]'));
+  var sections = [];
+
+  links.forEach(function (link) {
+    var id = link.getAttribute('data-section');
+    var el = document.getElementById(id);
+    if (el) sections.push({ id: id, el: el, link: link });
+
+    // 点击平滑滚动，并补偿吸顶导航栏的高度
+    link.addEventListener('click', function (e) {
+      var target = document.getElementById(id);
+      if (!target) return;
+      e.preventDefault();
+      var navH = nav.offsetHeight;
+      var y = target.getBoundingClientRect().top + window.scrollY - navH - 8;
+      window.scrollTo({ top: y, behavior: 'smooth' });
+    });
+  });
+
+  if (!('IntersectionObserver' in window) || sections.length === 0) return;
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      var match = sections.find(function (s) { return s.el === entry.target; });
+      if (!match) return;
+      if (entry.isIntersecting) {
+        links.forEach(function (l) { l.classList.remove('active'); });
+        match.link.classList.add('active');
+        match.el.classList.add('highlight');
+      } else {
+        match.el.classList.remove('highlight');
+      }
+    });
+  }, { rootMargin: '-80px 0px -60% 0px', threshold: 0 });
+
+  sections.forEach(function (s) { observer.observe(s.el); });
+})();
+</script>
 
 </body>
 </html>

@@ -96,7 +96,7 @@ cat ${CLAUDE_SKILL_DIR}/templates/components.md
 - `{{BUILDER_COUNT}}` → 本期 builder 数量
 - `{{TWEET_COUNT}}` → 本期推文总数
 - `{{PODCAST_COUNT}}` → 本期播客数量（0 或 1）
-- `{{NAV_ITEMS}}` → 根据内容生成导航栏
+- `{{NAV_ITEMS}}` → 根据内容生成导航栏，**每项是锚点链接 `<a href="#sec-xxx" data-section="sec-xxx">`，且必须对应页面里某个带 `id` 的 `sec-bar`**（详见 components.md 第 1 节）。X 动态固定有（`#sec-x`），有播客则加 `#sec-podcast`。导航栏的吸顶、平滑滚动、滚动高亮交互已内置在 base.html 的 CSS/JS 里，无需额外处理。
 
 #### 4.3 填充 Lead Banner
 用 Step 3 选出的头条填入：

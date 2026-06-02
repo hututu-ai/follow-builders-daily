@@ -6,17 +6,21 @@
 
 ## 1. 导航栏项 (NAV_ITEMS)
 
-根据当天内容生成导航栏。第一个默认高亮（加 `active` class）。
+导航栏只列出**页面里真实存在、可跳转的板块**——每一项都是一个锚点链接 `<a>`，对应页面中某个带 `id` 的 `sec-bar`。第一项加 `active` class 作为初始高亮。
 
 ```html
-<span class="active">X 动态</span>
-<span>播客专题</span>
-<span>AI 工程</span>
-<span>产品动向</span>
-<span>行业观察</span>
+<a href="#sec-x" data-section="sec-x" class="active">X 动态</a>
+<a href="#sec-podcast" data-section="sec-podcast">播客专题</a>
 ```
 
-导航标签从今日推文的话题分类中提取，通常 4-6 个。第一个固定为「X 动态」，如有播客则加「播客专题」，其余根据内容生成。
+**生成规则：**
+- 「X 动态」永远有 → `<a href="#sec-x" data-section="sec-x" class="active">X 动态</a>`（对应 base.html 里 `id="sec-x"` 的板块）
+- 有播客时才加「播客专题」→ `<a href="#sec-podcast" data-section="sec-podcast">播客专题</a>`
+- 若未来新增其它独立板块（如博客），给该板块的 `sec-bar` 配一个唯一 `id`（如 `sec-blog`），再加一条对应的 `<a>`
+
+⚠️ **关键约束**：
+- 每个导航项的 `href` / `data-section` 必须和页面里某个 `sec-bar` 的 `id` **完全一致**，否则点击跳转和滚动高亮都会失效。
+- **没有对应 section 的标签不要放进导航栏**（不要放「AI 工程」「产品动向」这类只是卡片 kicker、并非独立板块的装饰性标签）。话题分类继续用在每张卡片的 `.art-kicker` 上即可。
 
 ---
 
@@ -215,7 +219,7 @@
 如果有播客数据，生成完整的播客区块。如果没有，整个区块不输出。
 
 ```html
-<div class="sec-bar" style="margin-top:32px;">
+<div class="sec-bar" id="sec-podcast" style="margin-top:32px;">
   <span class="sec-tag lime">播客专题</span>
   <span class="sec-title">深度报道</span>
   <span class="sec-count">No Priors · 本期精译</span>
