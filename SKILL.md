@@ -1,6 +1,6 @@
 ---
 name: follow-builders-daily
-description: 把 Follow Builders Skill 的文字摘要变成一份报纸风格的 HTML 日报。依赖原版 follow-builders skill 已安装。触发词："生成日报" / "今日日报" / "newspaper" / "报纸" / "daily"。
+description: 把 Follow Builders Skill 的文字摘要变成一份报纸风格的 HTML 日报，并可邮件订阅（把报纸发到邮箱）。依赖原版 follow-builders skill 已安装。触发词："生成日报" / "今日日报" / "newspaper" / "报纸" / "daily" / "邮件订阅" / "发到邮箱" / "email me"。
 ---
 
 # Follow Builders 日报 — 报纸排版工作流
@@ -176,14 +176,35 @@ open ~/cola/outputs/follow-builders-daily/index.html
 
 5. 告诉用户日报已生成，显示包含的内容统计。
 
-### Step 6: 投递（可选）
+### Step 6: 邮件投递（邮件订阅）
 
-如果用户配置了 Telegram/Email（读取 `~/.follow-builders/config.json`），同时用原版 deliver.js 发送一份**纯文字精简版**作为通知：
+**触发条件**：用户说「邮件订阅」「发到邮箱」「email me」，**或** `~/.follow-builders/config.json` 中 `delivery.method` 为 `"email"`。
+
+邮件能渲染 HTML，所以直接把生成的报纸 HTML 作为邮件正文发出去，收件箱里就是一份排版完整的报纸：
 
 ```bash
-echo '今日 AI Builder 日报已生成，请在浏览器中查看。' > /tmp/fb-daily-notify.txt
-cd ${HOME}/.claude/skills/follow-builders/scripts && node deliver.js --file /tmp/fb-daily-notify.txt 2>/dev/null
+node ${CLAUDE_SKILL_DIR}/scripts/send-email.mjs --file ~/cola/outputs/follow-builders-daily/index.html
 ```
+
+脚本会自动复用原版 follow-builders 已有的邮箱配置：
+- `RESEND_API_KEY` ← `~/.follow-builders/.env`
+- 收件地址 ← `~/.follow-builders/config.json` 的 `delivery.email`（也可加 `--to 邮箱` 覆盖）
+
+**如果脚本报错没有 key 或收件人**：说明用户还没配过邮件投递。引导他们在原版里开启：在 Claude Code 里说「把投递方式改成邮件」，原版会引导注册一个免费的 [Resend](https://resend.com) key 并填入邮箱。配好后再回来即可。
+
+> 注：发件用 Resend 免费测试域 `onboarding@resend.dev` 时，只能发给账号本人邮箱（「发给自己」场景足够）。用户验证自有域名后，可设环境变量 `FB_DAILY_FROM` 覆盖发件地址。
+
+> Telegram 不能渲染 HTML，所以本 skill 的报纸不走 Telegram；如果用户用 Telegram，仍可用原版的纯文字摘要。
+
+### Step 7: 每日自动订阅（可选，进阶）
+
+「邮件订阅」要真正每天自动到达，需要一个定时器在到点时跑「生成 + 发邮件」。因为 HTML 组装依赖 Claude，无法用纯 shell 的 crontab 完成，需借助能定时唤起 agent 的工具：
+
+- **OpenClaw 用户**：用 `openclaw cron add`，message 设为「生成日报并邮件投递」。
+- **Claude Code 用户**：用支持定时唤起的调度方案（如 scheduled-tasks），到点触发「生成日报」即可，本 skill 会在 Step 6 自动发邮件。
+- 没有调度器时：保持「手动触发」——用户每天说一句「生成日报并发到邮箱」，同样能收到邮件。
+
+引导用户按其平台选择；不强制配置。
 
 ---
 

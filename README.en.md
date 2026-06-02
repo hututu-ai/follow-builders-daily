@@ -150,6 +150,26 @@ It also responds to: "today's daily", "make a newspaper", "日报", "newspaper".
 
 ---
 
+## 📬 Email subscription (get the newspaper in your inbox)
+
+Don't want to open the browser every time? You can have it **email the newspaper straight to your inbox** — email clients render HTML, so your inbox shows a fully laid-out newspaper. 📰
+
+**How to enable:**
+
+1. In Claude Code, say: `switch delivery to email`
+   The original follow-builders will walk you through getting a **free** [Resend](https://resend.com) key (100 emails/day, more than enough) and entering your recipient address.
+2. Once configured, say: `generate daily and email it` — the newspaper lands in your inbox.
+
+> The email config and key are reused from the original (stored in `~/.follow-builders/`) — no need to set them up twice.
+
+**Want it automatically every day?**
+True "scheduled daily delivery" needs a timer that wakes up the generation. Because the newspaper's layout assembly depends on Claude, a plain shell cron can't do it — you need something that can schedule waking an agent (e.g. OpenClaw's cron, or a scheduler that triggers on time). Without a scheduler, saying it manually once a day still gets you the email.
+
+> ⚠️ Note: HTML/CSS support varies across email clients; a few very old clients may render slightly off. Mainstream clients (Gmail, Apple Mail, Outlook web) render well.
+> With Resend's free test sending domain, you can only email **your own account's** address ("send to self" is plenty). After verifying your own domain, you can send to any address.
+
+---
+
 ## 📄 What's in an edition
 
 | Section | Content |
@@ -172,6 +192,8 @@ follow-builders-daily/
 ├── templates/
 │   ├── base.html             # The "blank" newspaper: all CSS + layout + {{placeholders}}
 │   └── components.md         # The "lego manual": what each card looks like and when to use it
+├── scripts/
+│   └── send-email.mjs        # Email delivery: sends the newspaper HTML to your inbox (zero-dep, reuses the original's email config)
 ├── examples/
 │   └── 2026-05-12.html       # A complete sample edition — open it to see the result
 ├── assets/                   # Preview images for this README
